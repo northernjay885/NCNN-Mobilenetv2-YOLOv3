@@ -4,6 +4,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/videoio.hpp>
 
 #include "net.h"
 //#include "mat.h"
@@ -105,34 +106,64 @@ static void draw_objects(const cv::Mat& inputImage, const std::vector<Object>& o
         cv::putText(image, text, cv::Point(x, y + textSize.height), cv::FONT_HERSHEY_DUPLEX, 0.5, cv::Scalar(255,255,255));
     }
 
-    cv::imshow("image", image);
-    cv::waitKey(0);
+    //cv::imshow("image", image);
+    //cv::waitKey(0);
 }
 
 
 int main(int argc, char** argv)
 {
-    if(argc != 2)
+    cv::Mat frame;
+
+    cv::VideoCapture cap;
+
+    // 0 = open default camera
+    int deviceID = 0;
+    // 0 = autodetect default API
+    int apiID = cv::CAP_ANY;
+
+    //open camera
+    cap.open(deviceID + apiID);
+
+    if(!cap.isOpened())
     {
-        std::cerr<<"Usage: "<<argv[0]<<" [imagepath]\n";
+        std::cerr<<"ERROR! Unable to open camera\n";
         return -1;
     }
 
-    const char* imagepath = argv[1];
-
-    cv::Mat image = cv::imread(imagepath, cv::IMREAD_COLOR);
-    if(image.empty())
+    //--- grab and write loop
+    while(true)
     {
-        std::cerr<<"no image has been read!"<<std::endl;
-        return -1;
+        cap.read(frame);
+        if(frame.empty())
+        {
+            std::cerr<<"ERROR! blank frame grabbed\n";
+            return -1;
+        }
+
+        std::vector<Object> objects;
+
+        detect_yolov3(frame, objects);
+        draw_objects(frame, objects);
+        
+        cv::imshow("image", frame);
+        if(cv::waitKey(5) >= 0)
+            break;
     }
+
+    //cv::Mat image = cv::imread(imagepath, cv::IMREAD_COLOR);
+    // if(image.empty())
+    // {
+    //     std::cerr<<"no image has been read!"<<std::endl;
+    //     return -1;
+    // }
 
     //detection
-    std::vector<Object> objects;
-    detect_yolov3(image, objects);
+    
+    
 
     //draw box
-    draw_objects(image, objects);
+    
 
     return 0;
 
