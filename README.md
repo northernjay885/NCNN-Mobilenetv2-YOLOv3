@@ -33,6 +33,6 @@ cmake -D CMAKE_BUILD_TYPE=Release ..
 
 ## Built With
 
-* [Cmake](https://www.djangoproject.com/)
+* [Cmake](https://cmake.org/)
 * [OpenCV](https://opencv.org/)
 * [NCNN](https://github.com/Tencent/ncnn)
