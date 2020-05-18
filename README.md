@@ -5,7 +5,7 @@ Build a YOLOv3 Convolutional Neural Network for object detection using NCNN fram
 ## Getting Started
 
 ```
-git clone https://github.com/northernjay885/Machine-Learning-Web-System-for-predicting-income-in-the-USA.git
+git clone https://github.com/northernjay885/NCNN-Mobilenetv2-YOLOv3.git
 ```
 
 ### Prerequisites
